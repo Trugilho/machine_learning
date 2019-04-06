@@ -39,7 +39,7 @@ boston = load_boston()
 descricao = boston.DESCR
 dataset = pd.DataFrame(boston.data, columns = boston.feature_names)
 dataset['target'] = boston.target
-
+    
 # Gerando número de observações e variáveis
 observations = len(dataset)
 variables = dataset.columns[:-1]

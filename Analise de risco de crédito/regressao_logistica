@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Mar 22 15:21:39 2019
+
+@author: trugilho
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import seaborn as sns
+import sklearn
+
+
+dataset = pd.read_csv("german_credit_data.csv", thousands=',')
+original_df = dataset.copy()
+dataset = dataset.drop(['Unnamed: 0'], axis=1)
+dataset = dataset.drop(['Purpose'], axis=1)
+
+
+# analise do dataset
+info = dataset.info().toString()
+dataset.describe()
+dataset.std()
+dataset.hist()
+plt.show()
+
+# trasnformando os dados
+from sklearn.preprocessing import LabelEncoder
+le= LabelEncoder()
+dataset["Risk"]= le.fit_transform(dataset["Risk"])
+dataset["Sex"] = le.fit_transform(dataset["Sex"])
+dataset["Housing"] = le.fit_transform(dataset["Housing"])
+dataset["Saving accounts"] = dataset["Saving accounts"].replace({"little":0, "moderate":1, "rich":2, "quite rich":3})
+dataset["Checking account"] = dataset["Checking account"].replace({"little":0, "moderate":1, "rich":2})
+
+ax2 = sns.scatterplot(x="Credit amount", y="Age", hue="Risk", data=dataset)
+
+variables = dataset.columns[:-1]
+X = dataset.iloc[:,:-1]
+Y = dataset.iloc[:,-1:]
+
+# continuar em https://www.kaggle.com/raymishra/credit-risk-classification
+
+
+
+
+
