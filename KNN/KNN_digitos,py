@@ -17,6 +17,8 @@ from sklearn.model_selection import cross_val_score
 import sklearn.neighbors
 import sklearn.metrics
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 
 digitos = sklearn.datasets.load_digits()
 X = digitos.data
@@ -47,9 +49,10 @@ for d in dimensoes:
 
 # 10 dimensões apresemta melhor acurácia
 X_fit_teste = svd.fit_transform(X_teste)
-print(modeloKNN.best_score_)
-print(modeloKNN.best_params_)
-teste = modeloKNN.predict(X_fit_teste)
-erro = Y_teste-teste
+#print(modeloKNN.best_score_)
+#print(modeloKNN.best_params_)
+previsoes = modeloKNN.predict(X_fit_teste)
+print (confusion_matrix(Y_teste, previsoes))
+print (accuracy_score(Y_teste, previsoes))
 
         
