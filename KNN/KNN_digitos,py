@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  8 23:17:19 2019
+
+@author: trugilho
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import sklearn
+import sklearn.datasets
+import sklearn.model_selection
+import sklearn.decomposition
+from sklearn.model_selection import cross_val_score
+import sklearn.neighbors
+import sklearn.metrics
+from sklearn.preprocessing import StandardScaler
+
+digitos = sklearn.datasets.load_digits()
+X = digitos.data
+Y = digitos.target
+norm = np.mean(X, axis = 0)
+X_norm = X - norm
+X_treino, X_teste, Y_treino, Y_teste = sklearn.model_selection.train_test_split (X_norm, Y, 
+                                                                                  test_size = 0.33, 
+                                                                                  random_state = 101)
+
+k = np.arange(20) + 1
+parametros= {'n_neighbors':k}
+# Construção do Modelo KNN
+# http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+modelo = sklearn.neighbors.KNeighborsClassifier()
+# Grid Search para Cross Validation com o melhor valor de K
+modeloKNN = sklearn.model_selection.GridSearchCV(modelo, parametros, cv = 10)
+# Listas vazias que vão receber os scrores de acurária e os parâmetros resultados do modelo
+acuracia = []
+dimensoes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+#procura pelo melhor numero de dimensões
+for d in dimensoes:
+    svd = sklearn.decomposition.TruncatedSVD(n_components = d)
+    X_fit = svd.fit_transform(X_treino)
+    modeloKNN.fit(X_fit, Y_treino)
+    scores = cross_val_score(modeloKNN, X_fit, Y_treino, cv=10, scoring='accuracy')
+    acuracia.append(scores.mean())
+
+# 10 dimensões apresemta melhor acurácia
+X_fit_teste = svd.fit_transform(X_teste)
+print(modeloKNN.best_score_)
+print(modeloKNN.best_params_)
+teste = modeloKNN.predict(X_fit_teste)
+erro = Y_teste-teste
+
+        
